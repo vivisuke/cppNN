@@ -6,7 +6,7 @@ SPR# 状 P Open Close ver     Type  概要
 0004 ◎ C 12/19 12/19 0.001│ToDo│FullyConnected クラス追加
 0005 ● C 12/19            │ToDo│AF_tahh クラス追加
 0006 ● C 12/19            │ToDo│Network::forward_propagation() 追加
-0007 ● C 12/19            │ToDo│
-0008 ● C 12/19            │ToDo│
+0007 ● C 12/19            │ToDo│Network::add(Layer*) 追加
+0008 ◎ C 12/19 12/19 0.001│ToDo│Layer::m_type 追加
 0009 ● C 12/19            │ToDo│
 0010 ● C 12/19            │ToDo│

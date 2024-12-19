@@ -20,7 +20,7 @@ Network& Network::add(Layer*ptr) {
 }
 //----------------------------------------------------------------------
 FullyConnected::FullyConnected(int nOutput)
-	: Layer(-1, nOutput)
+	: Layer(LT_FULLY_CNCT, -1, nOutput)
 {
 }
 FullyConnected::~FullyConnected() {

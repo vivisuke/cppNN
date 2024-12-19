@@ -5,6 +5,15 @@
 
 class Layer;
 
+typedef unsigned char uchar;
+
+enum {
+	LT_FULLY_CNCT = 1,
+	LT_TANH,
+	LT_SIGMOID,
+	LT_SOFTMAX,
+};
+
 //	シーケンシャルネットワーククラス
 class Network {
 public:
@@ -20,14 +29,15 @@ private:
 //	シーケンシャルネットワーク各レイヤー基底クラス
 class Layer {
 public:
-	Layer(int nInput = -1, int nOutput = -1)
-		: m_nInput(nInput), m_nOutput(nOutput)
+	Layer(uchar type, int nInput = -1, int nOutput = -1)
+		: m_type(type), m_nInput(nInput), m_nOutput(nOutput)
 	{}
 	virtual ~Layer() {};
 public:
 	void	set_nInput(int nInput) { m_nInput = nInput; }
 	int		get_nOutput() const { return m_nOutput; }
 protected:
+	uchar	m_type;
 	int		m_nInput;
 	int		m_nOutput;
 };
