@@ -5,8 +5,18 @@ SPR# 状 P Open Close ver     Type  概要
 0003 ◎ C 12/19 12/19 0.001│ToDo│Layer クラス追加
 0004 ◎ C 12/19 12/19 0.001│ToDo│FullyConnected クラス追加
 0005 ● C 12/19            │ToDo│AF_tahh クラス追加
-0006 ● C 12/19            │ToDo│Network::forward_propagation() 追加
+0006 ● C 12/19            │ToDo│Network::forward() 追加
 0007 ● C 12/19            │ToDo│Network::add(Layer*) 追加
 0008 ◎ C 12/19 12/19 0.001│ToDo│Layer::m_type 追加
-0009 ● C 12/19            │ToDo│
-0010 ● C 12/19            │ToDo│
+0009 ● C 12/19            │ToDo│FullyConnected ネット追加時：重み初期化
+0010 ◎ C 12/20 12/20 0.001│ToDo│FullyConnected → AffineMap（アフィン写像） にリネーム
+0011 ● C 12/20            │ToDo│
+0012 ● C 12/20            │ToDo│
+0013 ● C 12/20            │ToDo│
+0014 ● C 12/20            │ToDo│
+0015 ● C 12/20            │ToDo│
+0016 ● C 12/20            │ToDo│
+0017 ● C 12/20            │ToDo│
+0018 ● C 12/20            │ToDo│
+0019 ● C 12/20            │ToDo│
+0020 ● C 12/20            │ToDo│

@@ -34,7 +34,7 @@ public:
 	{}
 	virtual ~Layer() {};
 public:
-	void	set_nInput(int nInput) { m_nInput = nInput; }
+	virtual void	set_nInput(int nInput) { m_nInput = nInput; }
 	int		get_nOutput() const { return m_nOutput; }
 protected:
 	uchar	m_type;
@@ -43,13 +43,13 @@ protected:
 };
 
 //	ëçåãçáëw
-class FullyConnected : public Layer {
+class AffineMap : public Layer {
 public:
-	FullyConnected(int nOutput);
-	~FullyConnected();
+	AffineMap(int nOutput);
+	~AffineMap();
 public:
 	void	set_nInput(int nInput);
 private:
-
+	std::vector<std::vector<float>>		m_weights;
 };
 
