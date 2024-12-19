@@ -29,11 +29,12 @@ private:
 //	シーケンシャルネットワーク各レイヤー基底クラス
 class Layer {
 public:
-	Layer(uchar type, int nInput = -1, int nOutput = -1)
+	Layer(uchar type, int nInput = 0, int nOutput = 0)
 		: m_type(type), m_nInput(nInput), m_nOutput(nOutput)
 	{}
 	virtual ~Layer() {};
 public:
+	virtual void	print() const {}
 	virtual void	set_nInput(int nInput) { m_nInput = nInput; }
 	int		get_nOutput() const { return m_nOutput; }
 protected:
@@ -48,6 +49,7 @@ public:
 	AffineMap(int nOutput);
 	~AffineMap();
 public:
+	void	print() const;
 	void	set_nInput(int nInput);
 private:
 	std::vector<std::vector<float>>		m_weights;

@@ -1,4 +1,5 @@
 
+#include <iostream>
 #include <random>
 #include "cppNN.h"
 
@@ -24,12 +25,21 @@ Network& Network::add(Layer*ptr) {
 }
 //----------------------------------------------------------------------
 AffineMap::AffineMap(int nOutput)
-	: Layer(LT_FULLY_CNCT, -1, nOutput)
+	: Layer(LT_FULLY_CNCT, 0, nOutput)
 {
 }
 AffineMap::~AffineMap() {
 }
 
+void AffineMap::print() const {
+	if( m_nInput <= 0 || m_nOutput <= 0 ) return;
+	for(int o = 0; o != m_nOutput; ++o) {
+		for(int i = 0; i <= m_nInput; ++i) {
+			cout << m_weights[o][i] << " ";
+		}
+		cout << endl;
+	}
+}
 void AffineMap::set_nInput(int nInput) {
 	m_nInput = nInput;
 	m_weights.clear();
