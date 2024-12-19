@@ -30,7 +30,6 @@ AffineMap::AffineMap(int nOutput)
 }
 AffineMap::~AffineMap() {
 }
-
 void AffineMap::print() const {
 	if( m_nInput <= 0 || m_nOutput <= 0 ) return;
 	for(int o = 0; o != m_nOutput; ++o) {
@@ -52,4 +51,11 @@ void AffineMap::set_nInput(int nInput) {
 			m_weights[o][i] = dist(mt);			//	Xavier‰Šú‰»
 		}
 	}
+}
+//----------------------------------------------------------------------
+AFtanh::AFtanh(int nOutput)
+	: Layer(LT_TANH, 0, nOutput)
+{
+}
+AFtanh::~AFtanh() {
 }
