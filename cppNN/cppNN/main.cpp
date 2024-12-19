@@ -10,8 +10,9 @@ int main()
 	auto af1 = new AFtanh();			//	活性化関数：tanh()
 	net.add(fc1);
 	net.add(af1);
-	fc1->print();
-	af1->print();
+	//fc1->print();
+	//af1->print();
+	net.print();
 
     std::cout << endl << "OK" << endl;
 }

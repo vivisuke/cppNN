@@ -19,6 +19,7 @@ class Network {
 public:
 	Network(int nInput);		//	“ü—ÍŽŸŒ³
 public:
+	void	print() const;
 	Network& add(Layer*);
 private:
 	int		m_nInput;

@@ -15,6 +15,11 @@ Network::Network(int nInput)
 	m_input.resize(nInput+1);		//	+1 for バイアス
 	m_input[0] = 1.0;
 }
+void Network::print() const {
+	cout << " nInput = " << m_nInput << endl;
+	for(int i = 0; i != m_layers.size(); ++i)
+		m_layers[i]->print();
+}
 Network& Network::add(Layer*ptr) {
 	if( m_layers.empty() )
 		ptr->set_nInput(m_nInput);
