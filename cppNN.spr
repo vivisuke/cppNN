@@ -11,8 +11,8 @@ SPR# 状 P Open Close ver     Type  概要
 0009 ● C 12/19            │ToDo│FullyConnected ネット追加時：重み初期化
 0010 ◎ C 12/20 12/20 0.001│ToDo│FullyConnected → AffineMap（アフィン写像） にリネーム
 0011 ◎ C 12/20 12/20 0.001│ToDo│AffineMap::print() 実装
-0012 ● C 12/20            │ToDo│
-0013 ● C 12/20            │ToDo│
+0012 ◎ C 12/20 12/20 0.001│ToDo│AFtahh：コンストラクタ引数削除
+0013 ◎ C 12/20 12/20 0.001│ToDo│AFtahh::print()
 0014 ● C 12/20            │ToDo│
 0015 ● C 12/20            │ToDo│
 0016 ● C 12/20            │ToDo│

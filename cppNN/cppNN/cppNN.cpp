@@ -31,8 +31,10 @@ AffineMap::AffineMap(int nOutput)
 AffineMap::~AffineMap() {
 }
 void AffineMap::print() const {
+	cout << "AffineMap:" << endl;
 	if( m_nInput <= 0 || m_nOutput <= 0 ) return;
 	for(int o = 0; o != m_nOutput; ++o) {
+		cout << " " << (o+1) << ": ";
 		for(int i = 0; i <= m_nInput; ++i) {
 			cout << m_weights[o][i] << " ";
 		}
@@ -53,9 +55,18 @@ void AffineMap::set_nInput(int nInput) {
 	}
 }
 //----------------------------------------------------------------------
-AFtanh::AFtanh(int nOutput)
-	: Layer(LT_TANH, 0, nOutput)
+AFtanh::AFtanh()
+	: Layer(LT_TANH, 0, 0)
 {
 }
 AFtanh::~AFtanh() {
 }
+void AFtanh::print() const {
+	cout << "AF tanh():";
+	cout << " nInput = " << m_nInput << ", nOutput = " << m_nOutput << endl;
+}
+void AFtanh::set_nInput(int nInput) {
+	m_nInput = m_nOutput = nInput;
+}
+
+

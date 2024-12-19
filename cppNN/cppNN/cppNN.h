@@ -57,11 +57,11 @@ private:
 //	Šˆ«‰»ŠÖ”Ftanh() 
 class AFtanh : public Layer {
 public:
-	AFtanh(int nOutput);
+	AFtanh();
 	~AFtanh();
 public:
-	//void	print() const;
-	//void	set_nInput(int nInput);
+	void	print() const;
+	void	set_nInput(int nInput);
 private:
 };
 
