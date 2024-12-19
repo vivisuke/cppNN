@@ -21,6 +21,7 @@ public:
 public:
 	void	print() const;
 	Network& add(Layer*);
+	void	forward(const std::vector<float>&);
 private:
 	int		m_nInput;
 	std::vector<float>	m_input;						//	入力値
@@ -29,19 +30,24 @@ private:
 
 //	シーケンシャルネットワーク各レイヤー基底クラス
 class Layer {
+	friend class Network;
 public:
 	Layer(uchar type, int nInput = 0, int nOutput = 0)
 		: m_type(type), m_nInput(nInput), m_nOutput(nOutput)
-	{}
+	{
+		m_outputs.resize(nOutput);
+	}
 	virtual ~Layer() {};
 public:
+	int		get_nOutput() const { return m_nOutput; }
 	virtual void	print() const {}
 	virtual void	set_nInput(int nInput) { m_nInput = nInput; }
-	int		get_nOutput() const { return m_nOutput; }
+	virtual void	forward(const std::vector<float>&) {}
 protected:
 	uchar	m_type;
 	int		m_nInput;
 	int		m_nOutput;
+	std::vector<float>		m_outputs;
 };
 
 //	総結合層
@@ -52,6 +58,7 @@ public:
 public:
 	void	print() const;
 	void	set_nInput(int nInput);
+	void	forward(const std::vector<float>&);
 private:
 	std::vector<std::vector<float>>		m_weights;
 };
@@ -63,6 +70,7 @@ public:
 public:
 	void	print() const;
 	void	set_nInput(int nInput);
+	void	forward(const std::vector<float>&);
 private:
 };
 

@@ -13,6 +13,9 @@ int main()
 	//fc1->print();
 	//af1->print();
 	net.print();
+	vector<float> idata({1, 1});
+	//fc1->forward(idata);
+	net.forward(idata);
 
     std::cout << endl << "OK" << endl;
 }

@@ -1,6 +1,7 @@
 
 #include <iostream>
 #include <random>
+#include <math.h>
 #include "cppNN.h"
 
 using namespace std;
@@ -27,6 +28,14 @@ Network& Network::add(Layer*ptr) {
 		ptr->set_nInput(m_layers.back()->get_nOutput());
 	m_layers.push_back(auto_ptr<Layer>(ptr));
 	return *this;
+}
+//	順伝播、inputs にバイアス分は含まない
+void Network::forward(const std::vector<float>& inputs) {
+	const std::vector<float>* idata = &inputs;
+	for(int i = 0; i != m_layers.size(); ++i) {
+		m_layers[i]->forward(*idata);
+		idata = &m_layers[i]->m_outputs;
+	}
 }
 //----------------------------------------------------------------------
 AffineMap::AffineMap(int nOutput)
@@ -59,6 +68,16 @@ void AffineMap::set_nInput(int nInput) {
 		}
 	}
 }
+//	順伝播、inputs にバイアス分は含まない
+void AffineMap::forward(const std::vector<float>& inputs) {
+	for(int o = 0; o != m_nOutput; ++o) {
+		float sum = m_weights[o][0];			//	バイアス分
+		for(int i = 0; i != m_nInput; ++i) {
+			sum += inputs[i] * m_weights[o][i+1];
+		}
+		m_outputs[o] = sum;
+	}
+}
 //----------------------------------------------------------------------
 AFtanh::AFtanh()
 	: Layer(LT_TANH, 0, 0)
@@ -72,6 +91,11 @@ void AFtanh::print() const {
 }
 void AFtanh::set_nInput(int nInput) {
 	m_nInput = m_nOutput = nInput;
+	m_outputs.resize(m_nOutput);
 }
-
+void AFtanh::forward(const std::vector<float>& inputs) {
+	for(int o = 0; o != m_nOutput; ++o) {
+		m_outputs[o] = (float)tanh((double)inputs[o]);
+	}
+}
 
