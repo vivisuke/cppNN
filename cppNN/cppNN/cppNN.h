@@ -41,13 +41,18 @@ public:
 public:
 	int		get_nOutput() const { return m_nOutput; }
 	virtual void	print() const {}
-	virtual void	set_nInput(int nInput) { m_nInput = nInput; }
+	virtual void	set_nInput(int nInput) {
+		m_nInput = nInput;
+		m_grad.resize(nInput);
+	}
 	virtual void	forward(const std::vector<float>&) {}
+	virtual void	backward(const std::vector<float>&) {}
 protected:
 	uchar	m_type;
 	int		m_nInput;
 	int		m_nOutput;
-	std::vector<float>		m_outputs;
+	std::vector<float>		m_outputs;		//	o—Í’l
+	std::vector<float>		m_grad;			//	Œë·’l
 };
 
 //	‘Œ‹‡‘w

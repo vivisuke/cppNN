@@ -15,8 +15,8 @@ SPR# 状 P Open Close ver     Type  概要
 0013 ◎ C 12/20 12/20 0.001│ToDo│AFtahh::print()
 0014 ◎ C 12/20 12/20 0.001│ToDo│Network::print()
 0015 ◎ C 12/20 12/21 0.001│ToDo│print()：m_outputs の値も表示
-0016 ● C 12/20            │ToDo│
-0017 ● C 12/20            │ToDo│
-0018 ● C 12/20            │ToDo│
-0019 ● C 12/20            │ToDo│
-0020 ● C 12/20            │ToDo│
+0016 ◎ C 12/21 12/21 0.001│ToDo│Layer::backward() 実装
+0017 ● C 12/21            │ToDo│
+0018 ● C 12/21            │ToDo│
+0019 ● C 12/21            │ToDo│
+0020 ● C 12/21            │ToDo│
