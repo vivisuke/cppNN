@@ -54,6 +54,10 @@ void AffineMap::print() const {
 		}
 		cout << endl;
 	}
+	cout << " outputs[]:" << endl << " ";
+	for(int o = 0; o != m_outputs.size(); ++o)
+		cout << m_outputs[o] << ", ";
+	cout << endl;
 }
 void AffineMap::set_nInput(int nInput) {
 	m_nInput = nInput;
@@ -88,6 +92,10 @@ AFtanh::~AFtanh() {
 void AFtanh::print() const {
 	cout << "AF tanh():";
 	cout << " nInput = " << m_nInput << ", nOutput = " << m_nOutput << endl;
+	cout << " outputs[]:" << endl << " ";
+	for(int o = 0; o != m_outputs.size(); ++o)
+		cout << m_outputs[o] << ", ";
+	cout << endl;
 }
 void AFtanh::set_nInput(int nInput) {
 	m_nInput = m_nOutput = nInput;
