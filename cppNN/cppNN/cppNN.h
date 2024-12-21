@@ -22,10 +22,13 @@ public:
 	void	print() const;
 	Network& add(Layer*);
 	void	forward(const std::vector<float>&);
+	void	backward(const std::vector<float>&);
+	void	train(const std::vector<std::vector<float>>&, const std::vector<std::vector<float>>&);
 private:
 	int		m_nInput;
 	std::vector<float>	m_input;						//	入力値
 	std::vector<std::auto_ptr<Layer>>	m_layers;		//	各レイヤーへのオートポインタ配列
+	std::vector<float>	m_grad;							//	誤差値
 };
 
 //	シーケンシャルネットワーク各レイヤー基底クラス
@@ -46,7 +49,7 @@ public:
 		m_grad.resize(nInput);
 	}
 	virtual void	forward(const std::vector<float>&) {}
-	virtual void	backward(const std::vector<float>&) {}
+	virtual void	backward(const std::vector<float>&, const std::vector<float>&) {}
 protected:
 	uchar	m_type;
 	int		m_nInput;
@@ -64,6 +67,7 @@ public:
 	void	print() const;
 	void	set_nInput(int nInput);
 	void	forward(const std::vector<float>&);
+	void	backward(const std::vector<float>&, const std::vector<float>&);
 private:
 	std::vector<std::vector<float>>		m_weights;
 };
@@ -76,6 +80,7 @@ public:
 	void	print() const;
 	void	set_nInput(int nInput);
 	void	forward(const std::vector<float>&);
+	void	backward(const std::vector<float>&, const std::vector<float>&);
 private:
 };
 

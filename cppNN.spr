@@ -16,7 +16,17 @@ SPR# 状 P Open Close ver     Type  概要
 0014 ◎ C 12/20 12/20 0.001│ToDo│Network::print()
 0015 ◎ C 12/20 12/21 0.001│ToDo│print()：m_outputs の値も表示
 0016 ◎ C 12/21 12/21 0.001│ToDo│Layer::backward() 実装
-0017 ● C 12/21            │ToDo│
-0018 ● C 12/21            │ToDo│
-0019 ● C 12/21            │ToDo│
-0020 ● C 12/21            │ToDo│
+0017 ● C 12/21            │ToDo│Network::train(学習データ、教師値データ) 実装
+0018 ◎ C 12/21 12/22 0.001│ToDo│AFtahh, AffineMap::backward() 実装
+0019 ◎ C 12/22 12/22 0.001│ToDo│Network::backward() 実装
+0020 ◎ C 12/22 12/22 0.001│ToDo│loss 計算 1/2*∑(y-t)^2
+0021 ● C 12/22            │ToDo│
+0022 ● C 12/22            │ToDo│
+0023 ● C 12/22            │ToDo│
+0024 ● C 12/22            │ToDo│
+0025 ● C 12/22            │ToDo│
+0026 ● C 12/22            │ToDo│
+0027 ● C 12/22            │ToDo│
+0028 ● C 12/22            │ToDo│
+0029 ● C 12/22            │ToDo│
+0030 ● C 12/22            │ToDo│

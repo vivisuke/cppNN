@@ -6,8 +6,8 @@
 
 using namespace std;
 
-std::random_device seed_gen;
-std::mt19937 mt(seed_gen());
+random_device seed_gen;
+mt19937 mt(seed_gen());
 
 //----------------------------------------------------------------------
 Network::Network(int nInput)
@@ -27,15 +27,40 @@ Network& Network::add(Layer*ptr) {
 	else
 		ptr->set_nInput(m_layers.back()->get_nOutput());
 	m_layers.push_back(auto_ptr<Layer>(ptr));
+	m_grad.resize(ptr->m_nOutput);
 	return *this;
 }
 //	順伝播、inputs にバイアス分は含まない
-void Network::forward(const std::vector<float>& inputs) {
-	const std::vector<float>* idata = &inputs;
+void Network::forward(const vector<float>& inputs) {
+	const vector<float>* idata = &inputs;
 	for(int i = 0; i != m_layers.size(); ++i) {
 		m_layers[i]->forward(*idata);
 		idata = &m_layers[i]->m_outputs;
 	}
+}
+void Network::backward(const vector<float>& inputs) {
+	const vector<float>* idata;
+	const vector<float>* grad = &m_grad;
+	for(int i = (int)m_layers.size(); --i >= 0; ) {
+		if( i == 0 ) idata = &inputs;
+		else idata = &m_layers[i-1]->m_outputs;
+		m_layers[i]->backward(*idata, *grad);
+		grad = &m_layers[i]->m_grad;
+	}
+}
+void Network::train(const vector<vector<float>>& train_data, const vector<vector<float>>& teachr_data) {
+	const int nOutput = m_layers.back()->m_nOutput;
+	m_grad.resize(nOutput);
+	float loss = 0.0f;
+	for(int i = 0; i != train_data.size(); ++i) {
+		forward(train_data[i]);
+		for(int o = 0; o != nOutput; ++o) {
+			m_grad[o] = teachr_data[i][o] - m_layers.back()->m_outputs[o];
+			loss += m_grad[o] * m_grad[o] / 2;
+		}
+		backward(train_data[i]);
+	}
+	cout << "loss = " << loss << endl;
 }
 //----------------------------------------------------------------------
 AffineMap::AffineMap(int nOutput)
@@ -61,10 +86,11 @@ void AffineMap::print() const {
 }
 void AffineMap::set_nInput(int nInput) {
 	m_nInput = nInput;
+	m_grad.resize(nInput+1);		//	+1 for バイアス項
 	m_weights.clear();
 	m_weights.resize(m_nOutput);
 	// 平均0.0f、標準偏差 1/sqrt(nInput) 正規分布
-	std::normal_distribution<float> dist(0.0f, (float)(1/sqrt((double)m_nInput)));
+	normal_distribution<float> dist(0.0f, (float)(1/sqrt((double)m_nInput)));
 	for(int o = 0; o != m_nOutput; ++o) {
 		m_weights[o].resize(m_nInput +1);		//	+1 for バイアス
 		for(int i = 0; i <= m_nInput; ++i) {
@@ -73,13 +99,22 @@ void AffineMap::set_nInput(int nInput) {
 	}
 }
 //	順伝播、inputs にバイアス分は含まない
-void AffineMap::forward(const std::vector<float>& inputs) {
+//			out[o] = ∑ inputs[i]*weights[o][i] + weights[o][0]
+void AffineMap::forward(const vector<float>& inputs) {
 	for(int o = 0; o != m_nOutput; ++o) {
 		float sum = m_weights[o][0];			//	バイアス分
 		for(int i = 0; i != m_nInput; ++i) {
 			sum += inputs[i] * m_weights[o][i+1];
 		}
 		m_outputs[o] = sum;
+	}
+}
+//	逆伝播
+//			∂L/∂Wi = grad[i] * ∂y/∂Wi = grad[i] * inputs[i]
+void AffineMap::backward(const vector<float>& inputs, const vector<float>& grad) {
+	for(int o = 0; o != m_nOutput; ++o) {
+		for(int i = 0; i != m_nInput; ++i) {
+		}
 	}
 }
 //----------------------------------------------------------------------
@@ -99,11 +134,17 @@ void AFtanh::print() const {
 }
 void AFtanh::set_nInput(int nInput) {
 	m_nInput = m_nOutput = nInput;
+	m_grad.resize(nInput);
 	m_outputs.resize(m_nOutput);
 }
-void AFtanh::forward(const std::vector<float>& inputs) {
+void AFtanh::forward(const vector<float>& inputs) {
 	for(int o = 0; o != m_nOutput; ++o) {
 		m_outputs[o] = (float)tanh((double)inputs[o]);
+	}
+}
+void AFtanh::backward(const vector<float>& inputs, const vector<float>& grad) {
+	for(int i = 0; i != m_nOutput; ++i) {
+		m_grad[i] = (1.0f - m_outputs[i]*m_outputs[i]) * grad[i];
 	}
 }
 
