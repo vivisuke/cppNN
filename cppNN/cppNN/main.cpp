@@ -18,13 +18,24 @@ int main()
 		//net.print();
 	}
 	//
-	if( true ) {
+	if( false ) {
 		//	2入力、１出力ネットワーク、1 の数を数えて出力
 		Network net(2);		//	2入力ネットワーク
 		net.add(new AffineMap(1));			//	総結合層
 		net.print();
 		const vector<vector<float>>& train_data = {{1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
 		const vector<vector<float>>& teacher_data = {{2}, {1}, {1}, {0}};
+		net.train(train_data, teacher_data, 10);
+		net.print();
+	}
+	if( true ) {
+		//	2入力、１出力ネットワーク、y = x1 & x2
+		Network net(2);		//	2入力ネットワーク
+		net.add(new AffineMap(1));			//	総結合層
+		net.add(new AFtanh());				//	活性化関数：tanh() 
+		net.print();
+		const vector<vector<float>>& train_data = {{1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
+		const vector<vector<float>>& teacher_data = {{1}, {-1}, {-1}, {-1}};
 		net.train(train_data, teacher_data, 10);
 		net.print();
 	}

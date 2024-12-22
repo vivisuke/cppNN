@@ -24,8 +24,8 @@ SPR# 状 P Open Close ver     Type  概要
 0022 ◎ C 12/22 12/22 0.001│ToDo│AffineMap::backward() 実装
 0023 ◎ C 12/22 12/22 0.001│ToDo│AffineMap::m_slw ∂L/∂Wij 合計２次元配列追加
 0024 ◎ C 12/22 12/22 0.001│ToDo│AffineMap::update() 実装
-0025 ● C 12/22            │ToDo│
-0026 ● C 12/22            │ToDo│
+0025 ◎ C 12/22 12/22 0.001│ToDo│AffineMap の学習がうまくいかず、loss が増え続ける
+0026 ◎ C 12/22 12/22 0.001│ToDo│loss 値をミニバッチ数で割る
 0027 ● C 12/22            │ToDo│
 0028 ● C 12/22            │ToDo│
 0029 ● C 12/22            │ToDo│

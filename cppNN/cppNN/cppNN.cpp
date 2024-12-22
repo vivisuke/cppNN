@@ -55,12 +55,14 @@ void Network::train(const vector<vector<float>>& train_data, const vector<vector
 		float loss = 0.0f;
 		for(int i = 0; i != train_data.size(); ++i) {
 			forward(train_data[i]);
+			//m_layers.back()->print();
 			for(int o = 0; o != nOutput; ++o) {
-				m_grad[o] = teachr_data[i][o] - m_layers.back()->m_outputs[o];
+				m_grad[o] = m_layers.back()->m_outputs[o] - teachr_data[i][o];
 				loss += m_grad[o] * m_grad[o] / 2;
 			}
 			backward(train_data[i]);
 		}
+		loss /= train_data.size() * nOutput;
 		cout << "loss = " << loss << endl;
 		for(int i = 0; i != m_layers.size(); ++i) {
 			if( m_layers[i]->m_type == LT_AFFINE )
@@ -99,6 +101,7 @@ void AffineMap::set_nInput(int nInput) {
 	m_grad.resize(nInput);		//	+1 for バイアス項
 	m_weights.clear();
 	m_weights.resize(m_nOutput);
+	
 	m_slw.resize(m_nOutput);
 	// 平均0.0f、標準偏差 1/sqrt(nInput) 正規分布
 	normal_distribution<float> dist(0.0f, (float)(1/sqrt((double)m_nInput)));
@@ -106,6 +109,9 @@ void AffineMap::set_nInput(int nInput) {
 		m_weights[o].resize(m_nInput +1);		//	+1 for バイアス
 		m_slw[o].resize(m_nInput +1);		//	+1 for バイアス
 		for(int i = 0; i < m_nInput + 1; ++i) {
+			//if( i == 0 ) m_weights[o][i] = 1.0f;	//	for Test
+			//else
+			//m_weights[o][i] = 0.5f;
 			m_weights[o][i] = dist(mt);			//	Xavier初期化
 			m_slw[o][i] = 0.0f;
 		}
