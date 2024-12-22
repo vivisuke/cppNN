@@ -8,7 +8,7 @@ class Layer;
 typedef unsigned char uchar;
 
 enum {
-	LT_FULLY_CNCT = 1,
+	LT_AFFINE = 1,
 	LT_TANH,
 	LT_SIGMOID,
 	LT_SOFTMAX,
@@ -23,7 +23,7 @@ public:
 	Network& add(Layer*);
 	void	forward(const std::vector<float>&);
 	void	backward(const std::vector<float>&);
-	void	train(const std::vector<std::vector<float>>&, const std::vector<std::vector<float>>&);
+	void	train(const std::vector<std::vector<float>>&, const std::vector<std::vector<float>>&, int);
 private:
 	int		m_nInput;
 	std::vector<float>	m_input;						//	ì¸óÕíl
@@ -48,6 +48,8 @@ public:
 		m_nInput = nInput;
 		m_grad.resize(nInput);
 	}
+	virtual void	init_slw() {}
+	virtual void	update(float) {}
 	virtual void	forward(const std::vector<float>&) {}
 	virtual void	backward(const std::vector<float>&, const std::vector<float>&) {}
 protected:
@@ -66,10 +68,13 @@ public:
 public:
 	void	print() const;
 	void	set_nInput(int nInput);
+	void	init_slw();
 	void	forward(const std::vector<float>&);
 	void	backward(const std::vector<float>&, const std::vector<float>&);
+	void	update(float alpha);
 private:
 	std::vector<std::vector<float>>		m_weights;
+	std::vector<std::vector<float>>		m_slw;			//	Å›L/Å›Wij çáåv
 };
 //	äàê´âªä÷êîÅFtanh() 
 class AFtanh : public Layer {

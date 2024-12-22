@@ -48,23 +48,29 @@ void Network::backward(const vector<float>& inputs) {
 		grad = &m_layers[i]->m_grad;
 	}
 }
-void Network::train(const vector<vector<float>>& train_data, const vector<vector<float>>& teachr_data) {
+void Network::train(const vector<vector<float>>& train_data, const vector<vector<float>>& teachr_data, int epoch) {
 	const int nOutput = m_layers.back()->m_nOutput;
 	m_grad.resize(nOutput);
-	float loss = 0.0f;
-	for(int i = 0; i != train_data.size(); ++i) {
-		forward(train_data[i]);
-		for(int o = 0; o != nOutput; ++o) {
-			m_grad[o] = teachr_data[i][o] - m_layers.back()->m_outputs[o];
-			loss += m_grad[o] * m_grad[o] / 2;
+	for(int epc = 0; epc != epoch; ++epc) {
+		float loss = 0.0f;
+		for(int i = 0; i != train_data.size(); ++i) {
+			forward(train_data[i]);
+			for(int o = 0; o != nOutput; ++o) {
+				m_grad[o] = teachr_data[i][o] - m_layers.back()->m_outputs[o];
+				loss += m_grad[o] * m_grad[o] / 2;
+			}
+			backward(train_data[i]);
 		}
-		backward(train_data[i]);
+		cout << "loss = " << loss << endl;
+		for(int i = 0; i != m_layers.size(); ++i) {
+			if( m_layers[i]->m_type == LT_AFFINE )
+				m_layers[i]->update(0.1f);
+		}
 	}
-	cout << "loss = " << loss << endl;
 }
 //----------------------------------------------------------------------
 AffineMap::AffineMap(int nOutput)
-	: Layer(LT_FULLY_CNCT, 0, nOutput)
+	: Layer(LT_AFFINE, 0, nOutput)
 {
 }
 AffineMap::~AffineMap() {
@@ -79,22 +85,36 @@ void AffineMap::print() const {
 		}
 		cout << endl;
 	}
-	cout << " outputs[]:" << endl << " ";
+	cout << " outputs[]: ";
 	for(int o = 0; o != m_outputs.size(); ++o)
 		cout << m_outputs[o] << ", ";
+	cout << endl;
+	cout << " grad[]: ";
+	for(int o = 0; o != m_grad.size(); ++o)
+		cout << m_grad[o] << ", ";
 	cout << endl;
 }
 void AffineMap::set_nInput(int nInput) {
 	m_nInput = nInput;
-	m_grad.resize(nInput+1);		//	+1 for バイアス項
+	m_grad.resize(nInput);		//	+1 for バイアス項
 	m_weights.clear();
 	m_weights.resize(m_nOutput);
+	m_slw.resize(m_nOutput);
 	// 平均0.0f、標準偏差 1/sqrt(nInput) 正規分布
 	normal_distribution<float> dist(0.0f, (float)(1/sqrt((double)m_nInput)));
 	for(int o = 0; o != m_nOutput; ++o) {
 		m_weights[o].resize(m_nInput +1);		//	+1 for バイアス
-		for(int i = 0; i <= m_nInput; ++i) {
+		m_slw[o].resize(m_nInput +1);		//	+1 for バイアス
+		for(int i = 0; i < m_nInput + 1; ++i) {
 			m_weights[o][i] = dist(mt);			//	Xavier初期化
+			m_slw[o][i] = 0.0f;
+		}
+	}
+}
+void AffineMap::init_slw() {
+	for(int o = 0; o != m_nOutput; ++o) {
+		for(int i = 0; i <= m_nInput + 1; ++i) {
+			m_weights[o][i] = 0.0f;
 		}
 	}
 }
@@ -112,8 +132,23 @@ void AffineMap::forward(const vector<float>& inputs) {
 //	逆伝播
 //			∂L/∂Wi = grad[i] * ∂y/∂Wi = grad[i] * inputs[i]
 void AffineMap::backward(const vector<float>& inputs, const vector<float>& grad) {
+	for (int o = 0; o != m_nOutput; ++o) {
+		m_slw[o][0] += grad[o];
+	}
+	for(int i = 0; i != m_nInput; ++i) {
+		m_grad[i] = 0.0f;
+		for(int o = 0; o != m_nOutput; ++o) {
+			auto g = inputs[i]*grad[o];
+			m_slw[o][i+1] += g;
+			m_grad[i] = g;
+		}
+	}
+}
+void AffineMap::update(float alpha) {
 	for(int o = 0; o != m_nOutput; ++o) {
-		for(int i = 0; i != m_nInput; ++i) {
+		for(int i = 0; i != m_nInput + 1; ++i) {
+			m_weights[o][i] -= alpha * m_slw[0][i];
+			m_slw[0][i] = 0.0f;
 		}
 	}
 }
