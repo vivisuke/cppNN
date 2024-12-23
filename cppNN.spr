@@ -26,7 +26,7 @@ SPR# 状 P Open Close ver     Type  概要
 0024 ◎ C 12/22 12/22 0.001│ToDo│AffineMap::update() 実装
 0025 ◎ C 12/22 12/22 0.001│ToDo│AffineMap の学習がうまくいかず、loss が増え続ける
 0026 ◎ C 12/22 12/22 0.001│ToDo│loss 値をミニバッチ数で割る
-0027 ● C 12/22            │ToDo│
-0028 ● C 12/22            │ToDo│
-0029 ● C 12/22            │ToDo│
-0030 ● C 12/22            │ToDo│
+0027 ● C 12/22            │ToDo│AffineMap＞重み初期化：tsuda の方法も実装してみる
+0028 ● C 12/22            │ToDo│(AffineMap + tanh()) * 2層で xor の loss が小さくならない
+0029 ◎ C 12/23 12/24 0.001│ToDo│AffineMap：重み指定可能に
+0030 ● C 12/23            │ToDo│

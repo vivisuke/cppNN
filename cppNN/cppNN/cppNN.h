@@ -68,6 +68,7 @@ public:
 public:
 	void	print() const;
 	void	set_nInput(int nInput);
+	void	set_weight(const std::vector<std::vector<float>>&);
 	void	init_slw();
 	void	forward(const std::vector<float>&);
 	void	backward(const std::vector<float>&, const std::vector<float>&);

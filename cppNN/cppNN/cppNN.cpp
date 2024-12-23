@@ -65,7 +65,7 @@ void Network::train(const vector<vector<float>>& train_data, const vector<vector
 		loss /= train_data.size() * nOutput;
 		cout << "loss = " << loss << endl;
 		for(int i = 0; i != m_layers.size(); ++i) {
-			if( m_layers[i]->m_type == LT_AFFINE )
+			//if( m_layers[i]->m_type == LT_AFFINE )
 				m_layers[i]->update(0.1f);
 		}
 	}
@@ -82,7 +82,7 @@ void AffineMap::print() const {
 	if( m_nInput <= 0 || m_nOutput <= 0 ) return;
 	for(int o = 0; o != m_nOutput; ++o) {
 		cout << " " << (o+1) << ": ";
-		for(int i = 0; i <= m_nInput; ++i) {
+		for(int i = 0; i != m_nInput + 1; ++i) {
 			cout << m_weights[o][i] << " ";
 		}
 		cout << endl;
@@ -119,8 +119,15 @@ void AffineMap::set_nInput(int nInput) {
 }
 void AffineMap::init_slw() {
 	for(int o = 0; o != m_nOutput; ++o) {
-		for(int i = 0; i <= m_nInput + 1; ++i) {
+		for(int i = 0; i != m_nInput + 1; ++i) {
 			m_weights[o][i] = 0.0f;
+		}
+	}
+}
+void AffineMap::set_weight(const std::vector<std::vector<float>>& w) {
+	for(int o = 0; o != m_nOutput; ++o) {
+		for(int i = 0; i != m_nInput + 1; ++i) {
+			m_weights[o][i] = w[o][i];
 		}
 	}
 }
@@ -184,7 +191,7 @@ void AFtanh::forward(const vector<float>& inputs) {
 	}
 }
 void AFtanh::backward(const vector<float>& inputs, const vector<float>& grad) {
-	for(int i = 0; i != m_nOutput; ++i) {
+	for(int i = 0; i != m_nInput; ++i) {
 		m_grad[i] = (1.0f - m_outputs[i]*m_outputs[i]) * grad[i];
 	}
 }
