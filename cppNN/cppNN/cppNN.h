@@ -23,6 +23,8 @@ public:
 	Network& add(Layer*);
 	void	forward(const std::vector<float>&);
 	void	backward(const std::vector<float>&);
+	float	forward_loss(const std::vector<std::vector<float>>&, const std::vector<std::vector<float>>&);
+	void	forward_backward(const std::vector<std::vector<float>>&, const std::vector<std::vector<float>>&);
 	void	train(const std::vector<std::vector<float>>&, const std::vector<std::vector<float>>&, int);
 private:
 	int		m_nInput;
@@ -74,6 +76,7 @@ public:
 	void	backward(const std::vector<float>&, const std::vector<float>&);
 	void	update(float alpha);
 private:
+	std::vector<float>		m_bias;
 	std::vector<std::vector<float>>		m_weights;
 	std::vector<std::vector<float>>		m_slw;			//	Å›L/Å›Wij çáåv
 };

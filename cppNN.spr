@@ -27,6 +27,16 @@ SPR# 状 P Open Close ver     Type  概要
 0025 ◎ C 12/22 12/22 0.001│ToDo│AffineMap の学習がうまくいかず、loss が増え続ける
 0026 ◎ C 12/22 12/22 0.001│ToDo│loss 値をミニバッチ数で割る
 0027 ● C 12/22            │ToDo│AffineMap＞重み初期化：tsuda の方法も実装してみる
-0028 ● C 12/22            │ToDo│(AffineMap + tanh()) * 2層で xor の loss が小さくならない
+0028 ● C 12/22            │問題│(AffineMap + tanh()) * 2層で xor の loss が小さくならない
 0029 ◎ C 12/23 12/24 0.001│ToDo│AffineMap：重み指定可能に
-0030 ● C 12/23            │ToDo│
+0030 ● C 12/23            │ToDo│AffineMap::m_weight を更新しない forward_backward() 実装
+0030 ● C 12/23            │問題│Network::m_grad[] が総和ではなく、毎回初期化されている
+0030 ● C 12/23            │ToDo│アフィン変換（時計方向90度回転）テスト
+0030 ● C 12/23            │ToDo│アフィン変換（x1 *= 2）テスト
+0030 ● C 12/25            │ToDo│アフィン変換（恒等関数：y1 = x1, y2 = x2）テスト
+0030 ● C 12/26            │ToDo│重みを微小変化させ ΔL/ΔW から偏微分計算可能に
+0030 ● C 12/26            │ToDo│AffineMap：バイアス重みを m_weight から分離
+0030 ◎ C 12/28 12/28 0.001│ToDo│平均自乗誤差計算 forward_loss(in, tv)
+0030 ● C 12/28            │ToDo│
+0030 ● C 12/28            │ToDo│
+0030 ● C 12/28            │ToDo│
