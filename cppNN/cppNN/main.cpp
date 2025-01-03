@@ -108,19 +108,46 @@ int main()
 		Network net(2);		//	2入力ネットワーク
 		AffineMap *af1;
 		net.add(af1 = new AffineMap(2));			//	総結合層
-		const vector<vector<float>>& wt0 = {{1.0f, 1.00f, 0.0f}, {0.0f, 0.0f, 1.00f}, };
-		//const vector<vector<float>>& wt1 = {{1.00f, 0.724f, 0.690f}};
+		const vector<vector<float>>& wt0 = {{1.0f, 1.00f, 0.0f}, {0.0f, 1.0f, 1.00f}, };
 		af1->set_weight(wt0);		//	重み指定
 		//net.print();
-		const vector<float>& train_data = {1, 1};
-		const vector<float>& teacher_data = {1, 1};
+		vector<float> train_data = {1, 1};
+		vector<float> teacher_data = {1, 1};
 		//const vector<vector<float>>& train_data = {{1, 1}, {1, -1}, {-1, -1}, {-1, 1}, };
 		//const vector<vector<float>>& teacher_data = {{1, 1}, {1, -1}, {-1, -1}, {-1, 1}, };
 		for(int i = 0; i != 5; ++i) {
-			net.forward_backward(train_data, teacher_data);
+			train_data[0] = distf(mt2);
+			train_data[1] = distf(mt2);
+			auto loss = net.forward_backward(train_data, train_data);
 			net.update_weights(0.1f);
 			net.print();
+			cout << "#" << (i+1) << " loss = " << loss << endl;
 		}
+		//net.print();
+	}
+	if( false ) {
+		//	2入力、2出力ネットワーク、y1 = x1, y2 = x2（恒等変換）
+		Network net(2);		//	2入力ネットワーク
+		AffineMap *af1;
+		net.add(af1 = new AffineMap(2));			//	総結合層
+		//const vector<vector<float>>& wt0 = {{1.0f, 1.00f, 0.0f}, {0.0f, 0.0f, 1.00f}, };
+		//const vector<vector<float>>& wt1 = {{1.00f, 0.724f, 0.690f}};
+		//af1->set_weight(wt0);		//	重み指定
+		//net.print();
+		vector<float> train_data = {1, 1};
+		vector<float> teacher_data = {1, 1};
+		//const vector<vector<float>>& train_data = {{1, 1}, {1, -1}, {-1, -1}, {-1, 1}, };
+		//const vector<vector<float>>& teacher_data = {{1, 1}, {1, -1}, {-1, -1}, {-1, 1}, };
+		for(int i = 0; i != 30; ++i) {
+			train_data[0] = distf(mt2);
+			train_data[1] = distf(mt2);
+			auto loss = net.forward_backward(train_data, train_data);
+			//auto loss = net.forward_backward(train_data, teacher_data);
+			net.update_weights(0.1f);
+			//net.print();
+			cout << "#" << (i+1) << " loss = " << loss << endl;
+		}
+		net.print();
 	}
 	if( false ) {
 		//	2入力、2出力ネットワーク、x1 のみ2倍

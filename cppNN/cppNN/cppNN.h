@@ -27,13 +27,13 @@ public:
 	void	backward(const std::vector<float>&);
 	float	forward_loss(const std::vector<std::vector<float>>&, const std::vector<std::vector<float>>&);
 	void	forward_diff(const std::vector<std::vector<float>>&, const std::vector<std::vector<float>>&);
-	void	forward_backward(const std::vector<float>&, const std::vector<float>&);
+	float	forward_backward(const std::vector<float>&, const std::vector<float>&);
 	void	forward_backward_batch(const std::vector<std::vector<float>>&, const std::vector<std::vector<float>>&);
 	void	train(const std::vector<std::vector<float>>&, const std::vector<std::vector<float>>&, int);
 private:
 	int		m_nInput;
 	std::vector<float>	m_input;						//	入力値
-	std::vector<std::auto_ptr<Layer>>	m_layers;		//	各レイヤーへのオートポインタ配列
+	std::vector<std::shared_ptr<Layer>>	m_layers;		//	各レイヤーへのオートポインタ配列
 	std::vector<float>	m_grad;							//	誤差値
 };
 

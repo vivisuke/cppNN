@@ -41,12 +41,12 @@ SPR# 状 P Open Close ver     Type  概要
 0039 ◎ C 01/02 01/03 0.001│ToDo│AffineMap::backward() の inputs 引数を削除、forward() で入力を覚えておく
 0040 ◎ C 01/02 01/03 0.001│ToDo│forward_backward()：複数データを処理するものは forward_backward_batch() に
 0041 ◎ C 01/02 01/03 0.001│ToDo│Network::update_weights()
-0042 ● C 01/02            │ToDo│
-0043 ● C 01/02            │ToDo│
-0044 ● C 01/02            │ToDo│
-0045 ● C 01/02            │ToDo│
-0046 ● C 01/02            │ToDo│
-0047 ● C 01/02            │ToDo│
-0048 ● C 01/02            │ToDo│
-0049 ● C 01/02            │ToDo│
-0050 ● C 01/02            │ToDo│
+0042 ◎ C 01/04 01/04 0.001│ToDo│auto_ptr → shared_ptr に変更
+0043 ● C 01/04            │ToDo│
+0044 ● C 01/04            │ToDo│
+0045 ● C 01/04            │ToDo│
+0046 ● C 01/04            │ToDo│
+0047 ● C 01/04            │ToDo│
+0048 ● C 01/04            │ToDo│
+0049 ● C 01/04            │ToDo│
+0050 ● C 01/04            │ToDo│

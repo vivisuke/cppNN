@@ -30,7 +30,7 @@ Network& Network::add(Layer*ptr) {
 		ptr->set_nInput(m_nInput);
 	else
 		ptr->set_nInput(m_layers.back()->get_nOutput());
-	m_layers.push_back(auto_ptr<Layer>(ptr));
+	m_layers.push_back(shared_ptr<Layer>(ptr));
 	m_grad.resize(ptr->m_nOutput);
 	return *this;
 }
@@ -86,7 +86,7 @@ void Network::forward_diff(const vector<vector<float>>& train_data, const vector
 	ptr->m_bias[0] -= DELTA;
 	cout << "ÝL/Ýb = " << (loss1 - loss0) / DELTA << endl;
 }
-void Network::forward_backward(const vector<float>& train_data, const vector<float>& teachr_data) {
+float Network::forward_backward(const vector<float>& train_data, const vector<float>& teachr_data) {
 	for(int i = 0; i != m_layers.size(); ++i)
 		m_layers[i]->init_dweight();
 	const int nOutput = m_layers.back()->m_nOutput;
@@ -99,6 +99,7 @@ void Network::forward_backward(const vector<float>& train_data, const vector<flo
 		loss += d * d / 2;
 	}
 	backward(m_grad);
+	return loss;
 }
 void Network::forward_backward_batch(const vector<vector<float>>& train_data, const vector<vector<float>>& teachr_data) {
 	const int nOutput = m_layers.back()->m_nOutput;
