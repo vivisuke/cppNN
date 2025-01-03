@@ -20,11 +20,15 @@ public:
 	Network(int nInput);		//	入力次元
 public:
 	void	print() const;
+	const std::vector<float>& get_outputs() const;
 	Network& add(Layer*);
+	void	update_weights(float = 0.1f);
 	void	forward(const std::vector<float>&);
 	void	backward(const std::vector<float>&);
 	float	forward_loss(const std::vector<std::vector<float>>&, const std::vector<std::vector<float>>&);
-	void	forward_backward(const std::vector<std::vector<float>>&, const std::vector<std::vector<float>>&);
+	void	forward_diff(const std::vector<std::vector<float>>&, const std::vector<std::vector<float>>&);
+	void	forward_backward(const std::vector<float>&, const std::vector<float>&);
+	void	forward_backward_batch(const std::vector<std::vector<float>>&, const std::vector<std::vector<float>>&);
 	void	train(const std::vector<std::vector<float>>&, const std::vector<std::vector<float>>&, int);
 private:
 	int		m_nInput;
@@ -50,10 +54,10 @@ public:
 		m_nInput = nInput;
 		m_grad.resize(nInput);
 	}
-	virtual void	init_slw() {}
-	virtual void	update(float) {}
+	virtual void	init_dweight() {}
+	virtual void	update_weights(float) {}
 	virtual void	forward(const std::vector<float>&) {}
-	virtual void	backward(const std::vector<float>&, const std::vector<float>&) {}
+	virtual void	backward(const std::vector<float>&) {}
 protected:
 	uchar	m_type;
 	int		m_nInput;
@@ -71,14 +75,16 @@ public:
 	void	print() const;
 	void	set_nInput(int nInput);
 	void	set_weight(const std::vector<std::vector<float>>&);
-	void	init_slw();
+	void	init_dweight();
 	void	forward(const std::vector<float>&);
-	void	backward(const std::vector<float>&, const std::vector<float>&);
-	void	update(float alpha);
-private:
+	void	backward(const std::vector<float>&);
+	void	update_weights(float alpha);
+public:
+	const float *last_inputs;
 	std::vector<float>		m_bias;
+	std::vector<float>		m_dbias;					//	∂L/∂W0 合計
 	std::vector<std::vector<float>>		m_weights;
-	std::vector<std::vector<float>>		m_slw;			//	∂L/∂Wij 合計
+	std::vector<std::vector<float>>		m_dweights;		//	∂L/∂Wij 合計
 };
 //	活性化関数：tanh() 
 class AFtanh : public Layer {
@@ -89,7 +95,7 @@ public:
 	void	print() const;
 	void	set_nInput(int nInput);
 	void	forward(const std::vector<float>&);
-	void	backward(const std::vector<float>&, const std::vector<float>&);
+	void	backward(const std::vector<float>&);
 private:
 };
 

@@ -21,6 +21,10 @@ void Network::print() const {
 	for(int i = 0; i != m_layers.size(); ++i)
 		m_layers[i]->print();
 }
+const vector<float>& Network::get_outputs() const {
+	if( m_layers.empty() ) return m_input;
+	else return m_layers.back()->m_outputs;
+}
 Network& Network::add(Layer*ptr) {
 	if( m_layers.empty() )
 		ptr->set_nInput(m_nInput);
@@ -29,6 +33,11 @@ Network& Network::add(Layer*ptr) {
 	m_layers.push_back(auto_ptr<Layer>(ptr));
 	m_grad.resize(ptr->m_nOutput);
 	return *this;
+}
+void Network::update_weights(float alpha) {
+	for(int i = 0; i != m_layers.size(); ++i) {
+		m_layers[i]->update_weights(alpha);
+	}
 }
 //	順伝播、inputs にバイアス分は含まない
 void Network::forward(const vector<float>& inputs) {
@@ -39,12 +48,12 @@ void Network::forward(const vector<float>& inputs) {
 	}
 }
 void Network::backward(const vector<float>& inputs) {
-	const vector<float>* idata;
+	//const vector<float>* idata;
 	const vector<float>* grad = &m_grad;
 	for(int i = (int)m_layers.size(); --i >= 0; ) {
-		if( i == 0 ) idata = &inputs;
-		else idata = &m_layers[i-1]->m_outputs;
-		m_layers[i]->backward(*idata, *grad);
+		//if( i == 0 ) idata = &inputs;
+		//else idata = &m_layers[i-1]->m_outputs;
+		m_layers[i]->backward(*grad);
 		grad = &m_layers[i]->m_grad;
 	}
 }
@@ -68,7 +77,30 @@ float Network::forward_loss(const vector<vector<float>>& train_data, const vecto
 	cout << "ave loss = " << loss << endl;
 	return loss;
 }
-void Network::forward_backward(const vector<vector<float>>& train_data, const vector<vector<float>>& teachr_data) {
+void Network::forward_diff(const vector<vector<float>>& train_data, const vector<vector<float>>& teachr_data) {
+	const float DELTA = 0.01f;
+	auto ptr = (AffineMap*)(m_layers[0].get());
+	auto loss0 = forward_loss(train_data, teachr_data);
+	ptr->m_bias[0] += DELTA;
+	auto loss1 = forward_loss(train_data, teachr_data);
+	ptr->m_bias[0] -= DELTA;
+	cout << "∂L/∂b = " << (loss1 - loss0) / DELTA << endl;
+}
+void Network::forward_backward(const vector<float>& train_data, const vector<float>& teachr_data) {
+	for(int i = 0; i != m_layers.size(); ++i)
+		m_layers[i]->init_dweight();
+	const int nOutput = m_layers.back()->m_nOutput;
+	m_grad.resize(nOutput);
+	float loss = 0.0f;
+	forward(train_data);
+	for(int o = 0; o != nOutput; ++o) {
+		auto d = m_layers.back()->m_outputs[o] - teachr_data[o];
+		m_grad[o] = d;
+		loss += d * d / 2;
+	}
+	backward(m_grad);
+}
+void Network::forward_backward_batch(const vector<vector<float>>& train_data, const vector<vector<float>>& teachr_data) {
 	const int nOutput = m_layers.back()->m_nOutput;
 	m_grad.resize(nOutput);
 	fill(m_grad.begin(), m_grad.end(), 0.0f);
@@ -110,7 +142,7 @@ void Network::train(const vector<vector<float>>& train_data, const vector<vector
 		cout << "loss = " << loss << endl;
 		for(int i = 0; i != m_layers.size(); ++i) {
 			//if( m_layers[i]->m_type == LT_AFFINE )
-				m_layers[i]->update(0.1f);
+				m_layers[i]->update_weights(0.1f);
 		}
 	}
 }
@@ -140,8 +172,9 @@ void AffineMap::print() const {
 	cout << " sum of ∂L/∂Wij: " << endl;
 	for(int o = 0; o != m_nOutput; ++o) {
 		cout << " " << (o+1) << ": ";
-		for(int i = 0; i != m_nInput + 1; ++i) {
-			cout << m_slw[o][i] << " ";
+		cout << m_dbias[o] << " ";
+		for(int i = 0; i != m_nInput; ++i) {
+			cout << m_dweights[o][i] << " ";
 		}
 		cout << endl;
 	}
@@ -156,30 +189,29 @@ void AffineMap::set_nInput(int nInput) {
 	m_weights.clear();
 	m_weights.resize(m_nOutput);
 	
-	m_slw.resize(m_nOutput);
+	m_dbias.resize(m_nOutput);
+	m_dweights.resize(m_nOutput);
 	// 平均0.0f、標準偏差 1/sqrt(nInput) 正規分布
 	normal_distribution<float> dist(0.0f, (float)(1/sqrt((double)m_nInput)));
 	for(int o = 0; o != m_nOutput; ++o) {
 		m_weights[o].resize(m_nInput);
-		m_slw[o].resize(m_nInput +1);		//	+1 for バイアス
+		m_dweights[o].resize(m_nInput);
 		m_bias[o] = dist(mt);			//	Xavier初期化
 		for(int i = 0; i < m_nInput; ++i) {
-			//if( i == 0 ) m_weights[o][i] = 1.0f;	//	for Test
-			//else
-			//m_weights[o][i] = 0.5f;
 			m_weights[o][i] = dist(mt);			//	Xavier初期化
-			m_slw[o][i] = 0.0f;
+			m_dweights[o][i] = 0.0f;
 		}
 	}
 }
-void AffineMap::init_slw() {
+void AffineMap::init_dweight() {
 	for(int o = 0; o != m_nOutput; ++o) {
-		for(int i = 0; i != m_nInput + 1; ++i) {
-			m_weights[o][i] = 0.0f;
+		m_dbias[o] = 0.0f;
+		for(int i = 0; i != m_nInput; ++i) {
+			m_dweights[o][i] = 0.0f;
 		}
 	}
 }
-void AffineMap::set_weight(const std::vector<std::vector<float>>& w) {
+void AffineMap::set_weight(const std::vector<std::vector<float>>& w) {		//	w はバイアスを含む
 	for(int o = 0; o != m_nOutput; ++o) {
 		m_bias[o] = w[o][0];
 		for(int i = 0; i != m_nInput; ++i) {
@@ -190,6 +222,7 @@ void AffineMap::set_weight(const std::vector<std::vector<float>>& w) {
 //	順伝播、inputs にバイアス分は含まない
 //			out[o] = ∑ inputs[i]*weights[o][i] + weights[o][0]
 void AffineMap::forward(const vector<float>& inputs) {
+	last_inputs = &inputs[0];
 	for(int o = 0; o != m_nOutput; ++o) {
 		float sum = m_bias[o];			//	バイアス
 		for(int i = 0; i != m_nInput; ++i) {
@@ -200,24 +233,24 @@ void AffineMap::forward(const vector<float>& inputs) {
 }
 //	逆伝播
 //			∂L/∂Wi = grad[i] * ∂y/∂Wi = grad[i] * inputs[i]
-void AffineMap::backward(const vector<float>& inputs, const vector<float>& grad) {
+void AffineMap::backward(const vector<float>& grad) {
 	for (int o = 0; o != m_nOutput; ++o) {
-		m_slw[o][0] += grad[o];
+		m_dbias[o] += grad[o];
 	}
 	for(int i = 0; i != m_nInput; ++i) {
 		m_grad[i] = 0.0f;
 		for(int o = 0; o != m_nOutput; ++o) {
-			auto g = inputs[i]*grad[o];
-			m_slw[o][i+1] += g;
-			m_grad[i] += g;
+			m_dweights[o][i] += last_inputs[i] * grad[o];
+			m_grad[i] += m_weights[o][i] * grad[o];
 		}
 	}
 }
-void AffineMap::update(float alpha) {
+void AffineMap::update_weights(float alpha) {
 	for(int o = 0; o != m_nOutput; ++o) {
-		for(int i = 0; i != m_nInput + 1; ++i) {
-			m_weights[o][i] -= alpha * m_slw[0][i];
-			m_slw[0][i] = 0.0f;
+		m_bias[o] -= alpha * m_dbias[o];
+		for(int i = 0; i != m_nInput; ++i) {
+			m_weights[o][i] -= alpha * m_dweights[o][i];
+			//m_dweights[0][i] = 0.0f;
 		}
 	}
 }
@@ -246,7 +279,7 @@ void AFtanh::forward(const vector<float>& inputs) {
 		m_outputs[o] = (float)tanh((double)inputs[o]);
 	}
 }
-void AFtanh::backward(const vector<float>& inputs, const vector<float>& grad) {
+void AFtanh::backward(const vector<float>& grad) {
 	for(int i = 0; i != m_nInput; ++i) {
 		m_grad[i] = (1.0f - m_outputs[i]*m_outputs[i]) * grad[i];
 	}

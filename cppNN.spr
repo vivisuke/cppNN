@@ -30,13 +30,23 @@ SPR# 状 P Open Close ver     Type  概要
 0028 ● C 12/22            │問題│(AffineMap + tanh()) * 2層で xor の loss が小さくならない
 0029 ◎ C 12/23 12/24 0.001│ToDo│AffineMap：重み指定可能に
 0030 ● C 12/23            │ToDo│AffineMap::m_weight を更新しない forward_backward() 実装
-0030 ● C 12/23            │問題│Network::m_grad[] が総和ではなく、毎回初期化されている
-0030 ● C 12/23            │ToDo│アフィン変換（時計方向90度回転）テスト
-0030 ● C 12/23            │ToDo│アフィン変換（x1 *= 2）テスト
-0030 ● C 12/25            │ToDo│アフィン変換（恒等関数：y1 = x1, y2 = x2）テスト
-0030 ● C 12/26            │ToDo│重みを微小変化させ ΔL/ΔW から偏微分計算可能に
-0030 ● C 12/26            │ToDo│AffineMap：バイアス重みを m_weight から分離
-0030 ◎ C 12/28 12/28 0.001│ToDo│平均自乗誤差計算 forward_loss(in, tv)
-0030 ● C 12/28            │ToDo│
-0030 ● C 12/28            │ToDo│
-0030 ● C 12/28            │ToDo│
+0031 ● C 12/23            │問題│Network::m_grad[] が総和ではなく、毎回初期化されている
+0032 ● C 12/23            │ToDo│アフィン変換（時計方向90度回転）テスト
+0033 ● C 12/23            │ToDo│アフィン変換（x1 *= 2）テスト
+0034 ● C 12/25            │ToDo│アフィン変換（恒等関数：y1 = x1, y2 = x2）テスト
+0035 ● B 12/26            │ToDo│重みを微小変化させ ΔL/ΔW から偏微分計算可能に
+0036 ◎ C 12/26 01/03 0.001│ToDo│AffineMap：バイアス重みを m_weight から分離
+0037 ◎ C 12/28 12/28 0.001│ToDo│平均自乗誤差計算 forward_loss(in, tv)
+0038 ◎ C 01/02 01/03 0.001│ToDo│m_slw → m_dweights にリネーム
+0039 ◎ C 01/02 01/03 0.001│ToDo│AffineMap::backward() の inputs 引数を削除、forward() で入力を覚えておく
+0040 ◎ C 01/02 01/03 0.001│ToDo│forward_backward()：複数データを処理するものは forward_backward_batch() に
+0041 ◎ C 01/02 01/03 0.001│ToDo│Network::update_weights()
+0042 ● C 01/02            │ToDo│
+0043 ● C 01/02            │ToDo│
+0044 ● C 01/02            │ToDo│
+0045 ● C 01/02            │ToDo│
+0046 ● C 01/02            │ToDo│
+0047 ● C 01/02            │ToDo│
+0048 ● C 01/02            │ToDo│
+0049 ● C 01/02            │ToDo│
+0050 ● C 01/02            │ToDo│

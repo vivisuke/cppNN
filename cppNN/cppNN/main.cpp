@@ -1,8 +1,32 @@
 ﻿#include <iostream>
+#include <random>
+#include <assert.h>
 #include "cppNN.h"
+
 using namespace std;
+
+random_device seed_gen2;
+mt19937 mt2(seed_gen2());
+std::uniform_real_distribution<float> distf(-1.0f, 1.0f);
+
 int main()
 {
+	if( false ) {	//	順伝播
+		//	2入力、2出力ネットワーク、y1 = x1, y2 = x2（恒等変換）
+		Network net(2);		//	2入力ネットワーク
+		AffineMap *af1;
+		net.add(af1 = new AffineMap(2));			//	総結合層
+		const vector<vector<float>>& wt0 = {{0.0f, 1.00f, 0.0f}, {0.0f, 0.0f, 1.00f}, };
+		af1->set_weight(wt0);		//	重み指定
+		vector<float> data1({+0.3f, -0.4f});
+		for(int i = 0; i != 10; ++i) {
+			data1[0] = distf(mt2);
+			data1[1] = distf(mt2);
+			net.forward(data1);
+			net.print();
+			assert( net.get_outputs() == data1 );
+		}
+	}
 	if( false ) {	//	順伝播
 		//	2入力、2出力ネットワーク、y1 = x1, y2 = x2（恒等変換）
 		Network net(2);		//	2入力ネットワーク
@@ -25,7 +49,7 @@ int main()
 		net.forward(data4);
 		net.print();
 	}
-	if( true ) {	//	平均自乗誤差計算
+	if( false ) {	//	平均自乗誤差計算
 		//	2入力、2出力ネットワーク、y1 = x1, y2 = x2（恒等変換）
 		Network net(2);		//	2入力ネットワーク
 		AffineMap *af1;
@@ -40,6 +64,19 @@ int main()
 		const vector<vector<float>>& wt2 = {{0.5f, 1.00f, 0.0f}, {0.0f, 0.0f, 1.00f}, };
 		af1->set_weight(wt2);		//	重み指定
 		net.forward_loss(train_data, teacher_data);
+	}
+	if( false ) {	//	ΔL/ΔW による勾配計算
+		//	2入力、2出力ネットワーク、y1 = x1, y2 = x2（恒等変換）
+		Network net(2);		//	2入力ネットワーク
+		AffineMap *af1;
+		net.add(af1 = new AffineMap(2));			//	総結合層
+		const vector<vector<float>>& wt0 = {{0.0f, 1.00f, 0.0f}, {0.0f, 0.0f, 1.00f}, };
+		//const vector<vector<float>>& wt1 = {{1.00f, 0.724f, 0.690f}};
+		af1->set_weight(wt0);		//	重み指定
+		//net.print();
+		const vector<vector<float>>& train_data = {{1, 1}, {1, -1}, {-1, -1}, {-1, 1}, };
+		const vector<vector<float>>& teacher_data = {{1, 1}, {1, -1}, {-1, -1}, {-1, 1}, };
+		net.forward_diff(train_data, teacher_data);
 	}
 	if( false ) {
 		Network net(2);		//	2入力ネットワーク
@@ -66,7 +103,7 @@ int main()
 		net.train(train_data, teacher_data, 10);	//	エポック数
 		net.print();
 	}
-	if( false ) {
+	if( true ) {
 		//	2入力、2出力ネットワーク、y1 = x1, y2 = x2（恒等変換）
 		Network net(2);		//	2入力ネットワーク
 		AffineMap *af1;
@@ -75,13 +112,15 @@ int main()
 		//const vector<vector<float>>& wt1 = {{1.00f, 0.724f, 0.690f}};
 		af1->set_weight(wt0);		//	重み指定
 		//net.print();
-		const vector<vector<float>>& train_data = {{1, 1}, };
-		const vector<vector<float>>& teacher_data = {{1, 1}, };
+		const vector<float>& train_data = {1, 1};
+		const vector<float>& teacher_data = {1, 1};
 		//const vector<vector<float>>& train_data = {{1, 1}, {1, -1}, {-1, -1}, {-1, 1}, };
 		//const vector<vector<float>>& teacher_data = {{1, 1}, {1, -1}, {-1, -1}, {-1, 1}, };
-		net.forward_backward(train_data, teacher_data);
-		//net.train(train_data, teacher_data, 1);	//	エポック数
-		net.print();
+		for(int i = 0; i != 5; ++i) {
+			net.forward_backward(train_data, teacher_data);
+			net.update_weights(0.1f);
+			net.print();
+		}
 	}
 	if( false ) {
 		//	2入力、2出力ネットワーク、x1 のみ2倍
